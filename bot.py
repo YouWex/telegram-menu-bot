@@ -1,73 +1,34 @@
 import os
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
-from db import init_db, add_user, is_admin
-
-import os
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
+from db import init_db, add_user
 
 TOKEN = os.getenv("BOT_TOKEN")
-    raise Exception("BOT_TOKEN tanımlı değil")
 
-def main_menu(is_admin_user=False):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    add_user(update.effective_user.id)
+
     keyboard = [
-        [InlineKeyboardButton("🎮 Menü", callback_data="menu")],
+        [InlineKeyboardButton("📦 Menü 1", callback_data="menu1")],
         [InlineKeyboardButton("⚙️ Ayarlar", callback_data="settings")]
     ]
-    if is_admin_user:
-        keyboard.append([InlineKeyboardButton("👑 Admin", callback_data="admin")])
-    return InlineKeyboardMarkup(keyboard)
-
-def start(update: Update, context: CallbackContext):
-    user = update.effective_user
-    add_user(user.id, user.username)
-
-    update.message.reply_text(
-        "Hoş geldin kanka 😎",
-        reply_markup=main_menu(is_admin(user.id))
+    await update.message.reply_text(
+        "Hoş geldin kanka 👋",
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
-def callback(update: Update, context: CallbackContext):
-    q = update.callback_query
-    q.answer()
+async def buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
 
-    if q.data == "menu":
-        q.edit_message_text(
-            "🎮 Menü:",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("🔥 Ücretsiz", callback_data="free")],
-                [InlineKeyboardButton("💎 Ücretli", callback_data="paid")],
-                [InlineKeyboardButton("⬅️ Geri", callback_data="back")]
-            ])
-        )
-
-    elif q.data == "free":
-        q.edit_message_text("🔥 Ücretsiz içerikler")
-
-    elif q.data == "paid":
-        q.edit_message_text("💎 Yetkili içerik")
-
-    elif q.data == "settings":
-        q.edit_message_text("⚙️ Ayarlar")
-
-    elif q.data == "admin":
-        q.edit_message_text("👑 Admin panel")
-
-    elif q.data == "back":
-        q.edit_message_text(
-            "Ana Menü:",
-            reply_markup=main_menu(is_admin(q.from_user.id))
-        )
-
-def run():
-    init_db()
-    updater = Updater(TOKEN, use_context=True)
-    dp = updater.dispatcher
-
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CallbackQueryHandler(callback))
-
-    updater.start_polling()
-    updater.idle()
+    if query.data == "menu1":
+        await query.edit_message_text("Menü 1 seçildi")
+    elif query.data == "settings":
+        await query.edit_message_text("Ayarlar burası")
 
 if __name__ == "__main__":
-    run()
+    init_db()
+    app = ApplicationBuilder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(buttons))
+    app.run_polling()
