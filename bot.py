@@ -3,7 +3,11 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
 from db import init_db, add_user, is_admin
 
-TOKEN = os.getenv("8397011749:AAHjtcvJV-tfuvEQ1yuEbWT0R6TN6s4MJso")
+import os
+
+TOKEN = os.getenv(8397011749:AAHjtcvJV-tfuvEQ1yuEbWT0R6TN6s4MJso)
+if not TOKEN:
+    raise Exception("BOT_TOKEN tanımlı değil")
 
 def main_menu(is_admin_user=False):
     keyboard = [
