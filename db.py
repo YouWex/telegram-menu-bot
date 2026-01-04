@@ -3,7 +3,7 @@ import psycopg2
 
 DATABASE_URL = os.getenv("postgresql://postgres:WBGNhsAfDbnTJgVKQMJGEVkvGDDPxkKI@postgres.railway.internal:5432/railway")
 
-conn = psycopg2.connect(DATABASE_URL, sslmode="require")
+conn = psycopg2.connect(postgresql://postgres:WBGNhsAfDbnTJgVKQMJGEVkvGDDPxkKI@postgres.railway.internal:5432/railway, sslmode="require")
 cursor = conn.cursor()
 
 def init_db():
