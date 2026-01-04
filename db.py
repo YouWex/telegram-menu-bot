@@ -1,7 +1,7 @@
 import os
 import psycopg2
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("postgresql://postgres:WBGNhsAfDbnTJgVKQMJGEVkvGDDPxkKI@postgres.railway.internal:5432/railway")
 
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cursor = conn.cursor()
