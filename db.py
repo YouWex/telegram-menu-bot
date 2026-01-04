@@ -1,7 +1,7 @@
 import os
 import psycopg2
 
-DATABASE_URL = os.getenv("postgresql://postgres:cMtUoPbZButVHqPWeOiTLtRNVkxOMaeQ@postgres-8ied.railway.internal:5432/railway")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
     raise Exception("DATABASE_URL tanımlı değil")
